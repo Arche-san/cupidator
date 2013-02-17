@@ -82,6 +82,10 @@ internal class WorldInst
 	
 	public function clearSequence():void
 	{
+		//Count entities in vectors
+		Debug.log("Nb Entities in allEntities " + allEntities.length);
+		Debug.log("Nb Entities in enemyEntities " + enemyEntities.length);
+		Debug.log("Nb Entities in entitiesToAdd " + entitiesToAdd.length);
 		//Delete all elements inside entities list
 		var mcParent:DisplayObjectContainer;
 		for each(var entity:Entity in allEntities)
@@ -92,14 +96,13 @@ internal class WorldInst
 			}
 			if ( null != entity.movieClip )
 			{
+				entity.destroy();
 				mcParent = entity.movieClip.parent;
 				if ( (null != mcParent) && mcParent.contains(entity.movieClip) ) {
 					mcParent.removeChild(entity.movieClip);
 				}
-				if( allEntities.indexOf(entity) > -1 ) {
-					allEntities.unshift(entity);
-				}
 				entity.movieClip = null;
+				entity = null;
 			}
 		}
 		
@@ -146,21 +149,40 @@ internal class WorldInst
 				//add entity movie clip to scene
 				if( entity.type != Constant.ENTITYTYPE_DECOR )
 					container.addChild(entity.movieClip);
-				Debug.log("Add new entity with type " + entity.type);
+				Debug.log("Add entity with type " + entity.type);
 			}
 			entitiesToAdd = new Vector.<Entity>();
 		}
 		
-		entityLength  = allEntities.length;
+		var mcParent:DisplayObjectContainer;
+		var cleanedAllEntities:Vector.<Entity> = allEntities.concat();
+		var cleanedEnemyEntities:Vector.<Entity> = enemyEntities.concat();
 		for each (entity in allEntities)
 		{
 			//Delete entity if mark as deleted
 			if (entity.markAsDeleted)
 			{
-				if (container.contains(entity.movieClip) )
+				if ( null != entity.movieClip )
 				{
-					container.removeChild(entity.movieClip);
-					allEntities.unshift(entity);
+					entity.destroy();
+					mcParent = entity.movieClip.parent;
+					//Remove movie clip from display list
+					if ( (null != mcParent) && (mcParent.contains(entity.movieClip)) ) {
+						mcParent.removeChild(entity.movieClip);
+						Debug.log("Remove clip " + entity.movieClip);
+					}
+					//Remove entity from entity list
+					if ( cleanedAllEntities.indexOf(entity) > -1 ) {
+						cleanedAllEntities.splice(cleanedAllEntities.indexOf(entity), 1);
+						Debug.log("Remove entity with type " + entity.type);
+					}
+					//Remove entity from enemy list if entity is enemy
+					if ( entity is Enemy && (cleanedEnemyEntities.indexOf(entity) > -1 ) ) {
+						cleanedEnemyEntities.splice(cleanedEnemyEntities.indexOf(entity), 1);
+						Debug.log("Remove enemy entity with type " + entity.type);
+					}
+					entity.movieClip = null;
+					entity = null;
 				}
 			}
 			else
@@ -168,6 +190,8 @@ internal class WorldInst
 				entity.update(time);
 			}
 		}
+		allEntities = cleanedAllEntities;
+		enemyEntities = cleanedEnemyEntities;
 		
 		whiteFader.update(time);
 		blackFader.update(time);
