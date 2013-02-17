@@ -9,6 +9,7 @@ package org.ggj.cupidator
 
 import com.oaxoa.fx.Lightning;
 import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.geom.Point;
@@ -81,18 +82,31 @@ internal class WorldInst
 	
 	public function clearSequence():void
 	{
-		
+		//Delete all elements inside entities list
+		var mcParent:DisplayObjectContainer;
 		for each(var entity:Entity in allEntities)
 		{
-			if ( entity is EnemyLightning )
+			//HACK : Never delete player entity
+			if (entity is Player) {
+				continue;
+			}
+			if ( null != entity.movieClip )
 			{
-				if (container.contains(entity.movieClip)) {
-					entity.movieClip.stop();
-					container.removeChild(entity.movieClip);
+				mcParent = entity.movieClip.parent;
+				if ( (null != mcParent) && mcParent.contains(entity.movieClip) ) {
+					mcParent.removeChild(entity.movieClip);
 				}
-				
+				if( allEntities.indexOf(entity) > -1 ) {
+					allEntities.unshift(entity);
+				}
+				entity.movieClip = null;
 			}
 		}
+		
+		//Delete all children inside background/floor/ceil movie clip
+		clearContainer(backgroundContainer);
+		clearContainer(floorContainer);
+		clearContainer(ceilContainer);
 		
 		allEntities = new Vector.<Entity>();
 		entitiesToAdd = new Vector.<Entity>();
@@ -103,6 +117,14 @@ internal class WorldInst
 		this.main.removeChild(whiteFader.movieClip);
 		this.main.removeChild(blackFader.movieClip);
 		this.main.removeChild(hud.movieClip);
+	}
+	
+	public function clearContainer(mcContainer:MovieClip):void
+	{
+		var numChildren:uint = mcContainer.numChildren;
+		while ( --numChildren ) {
+			mcContainer.removeChildAt(numChildren);
+		}
 	}
 		
 	public function update(time:uint):void
