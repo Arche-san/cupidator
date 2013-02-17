@@ -226,11 +226,8 @@ package org.ggj.cupidator
 			var enemy:Enemy = Enemy(colInfo.a);
 			var arrow:Arrow = Arrow(colInfo.b);
 			
-			
-			
 			if (enemy.life > 0)
-			{
-				arrow.markAsDeleted = true;
+			{				
 				enemy.life -= 1;
 				if (enemy.life == 0)
 				{
@@ -245,6 +242,7 @@ package org.ggj.cupidator
 			{
 				EnemyGlobuleRed1(enemy).onHit();
 			}
+			arrow.markAsDeleted = true;			
 			return false;
 			
 		}

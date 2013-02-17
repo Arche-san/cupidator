@@ -35,7 +35,7 @@ package org.ggj.cupidator.entities
 			//Destroy arrow if enter outside of activity area
 			var point:Point = new Point(movieClip.x, movieClip.y);
 			point = movieClip.parent.localToGlobal(point);
-			if ( point.x > Constant.GAME_WIDTH + Constant.OFFSET_ACTIVITY_AREA )
+			if ( (point.x > Constant.GAME_WIDTH + Constant.OFFSET_ACTIVITY_AREA) || (point.y > Constant.GAME_HEIGHT + Constant.OFFSET_ACTIVITY_AREA) )
 			{
 				Debug.log("Arrow is marked as deleted");
 				markAsDeleted = true;
