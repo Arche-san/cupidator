@@ -95,7 +95,7 @@ package org.ggj.cupidator
 		{			
 			currentSequence++;
 			
-			/*switch(currentSequence)
+			switch(currentSequence)
 			{
 				case 1 : // SPLASH
 				{
@@ -175,9 +175,9 @@ package org.ggj.cupidator
 					addChild(currentSeqMC);
 					break;
 				}
-			}*/
+			}
 			
-			switch(currentSequence)
+			/*switch(currentSequence)
 			{
 				case 1 : // SPLASH
 				{
@@ -247,7 +247,7 @@ package org.ggj.cupidator
 					addChild(currentSeqMC);
 					break;
 				}
-			}
+			}*/
 			
 		}
 		
