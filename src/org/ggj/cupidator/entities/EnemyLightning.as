@@ -46,27 +46,14 @@ package org.ggj.cupidator.entities
 			
 			if ( enterActivityArea )
 			{
-				if ( !markAsDeleted )
-				{
-					if ( null == ll ) {
-						initLighting();
-					}
-					else {
-						//Update positions
-						ll.endX = movieClip.fingers.x;
-						ll.endY = movieClip.fingers.y;
-						ll.update();
-					}
+				if ( null == ll ) {
+					initLighting();
 				}
-				else
-				{
-					if ( movieClip.contains(ll) )
-					{
-						ll.kill();
-						//movieClip.removeChild(ll);
-						ll = null;
-						Debug.log("Killing Lighting");
-					}
+				else {
+					//Update positions
+					ll.endX = movieClip.fingers.x;
+					ll.endY = movieClip.fingers.y;
+					ll.update();
 				}
 			}
 		}
@@ -76,7 +63,8 @@ package org.ggj.cupidator.entities
 			movieClip.setChildIndex(movieClip.fingers, 1);			
 			var color:uint = 0xddeeff;			
 			ll = new Lightning(color, 2);
-			ll.blendMode= BlendMode.ADD;
+			ll.blendMode = BlendMode.ADD;
+			ll.childrenMaxCount = 3;
 			ll.childrenProbability=.5;
 			ll.childrenLifeSpanMin=.1;
 			ll.childrenLifeSpanMax=1.5;
@@ -93,6 +81,13 @@ package org.ggj.cupidator.entities
 			glow.blurX=glow.blurY=10;
 			ll.filters =[glow];
 			movieClip.addChild(ll);			
+		}
+		
+		public override function destroy():void
+		{
+			ll.kill();
+			ll = null;
+			Debug.log("Destroy Lighting");
 		}
 	}
 

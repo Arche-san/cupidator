@@ -132,6 +132,11 @@ package org.ggj.cupidator
 			
 			outOfActivityBox =  (point.x > Constant.GAME_WIDTH + Constant.OFFSET_ACTIVITY_AREA);
 		}
+		
+		public function destroy():void
+		{
+			
+		}
 	}
 
 }
